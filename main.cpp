@@ -4,11 +4,10 @@
 #include <cmath>
 using namespace std;
 
-typedef enum {up, left, diagonal} direction;
 
 struct letter {
   double val;
-  direction d;
+  char d = 'o';
 };
 
 int main() {
@@ -18,6 +17,8 @@ int main() {
   G         1  -.1
   T              1
   */
+ //AGTACCGTAACTGTCAGT
+ //AGCACGTTAGCAGTTGAT
   int x,y;
   double score = 0;
   double penalty = -.1;
@@ -41,7 +42,7 @@ int main() {
       //matching
       if (aChar == bChar) {
         dp[i][j].val = (dp[i-1][j-1].val + 1);
-        dp[i][j].d = direction::diagonal;
+        dp[i][j].d = 'd';
       }
       else {
         //replace
@@ -70,33 +71,41 @@ int main() {
         double max = std::max({rep, ins, del});
         dp[i][j].val = max;
         if(max == del) {
-          dp[i][j].d = direction::up;
+          dp[i][j].d = 'u';
         }
         else if (max == ins) {
-          dp[i][j].d = direction::left;
+          dp[i][j].d = 'l';
         }
-        else dp[i][j].d = direction::diagonal;
+        else dp[i][j].d = 'd';
       }
     }
   }
-  score = dp[y-1][x-1].val;
-
-  //print alignment
   x--;
   y--;
+  score = dp[y][x].val;
+
+  //print alignment
   while (x > 0 && y > 0) {
-    if (dp[y][x].d == direction::up) {
+    if (dp[y][x].d == 'u') {
       newA.insert(x, "-");
       y--;
     }
-    else if (dp[y][x].d == direction::left) {
+    else if (dp[y][x].d == 'l') {
       newB.insert(y, "-");
       x--;
     }
-    else if (dp[y][x].d == direction::diagonal) {
+    else if (dp[y][x].d == 'd') {
       x--;
       y--;
     }
+  }
+  while (x > 0) {
+    newA.insert(x-1, "-");
+    x--;
+  }
+  while (y > 0) {
+    newA.insert(y-1, "-");
+    y--;
   }
   std::cout << score << std::endl << newA << std::endl << newB << std::endl;
   return 0;
