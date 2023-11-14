@@ -40,9 +40,19 @@ int main() {
       char aChar = a[j-1];
       char bChar = b[i-1];
       //matching
-      if (aChar == bChar) {
-        dp[i][j].val = (dp[i-1][j-1].val + 1);
-        dp[i][j].d = 'd';
+      if (aChar == bChar) { 
+        double match = (dp[i-1][j-1].val + 1);
+        double ins = dp[i][j-1].val - 0.2; //insertion
+        double del = dp[i-1][j].val - 0.2; //deletion
+        double max = std::max({match, ins, del});
+        dp[i][j].val = max;
+        if(max == del) {
+          dp[i][j].d = 'u';
+        }
+        else if (max == ins) {
+          dp[i][j].d = 'l';
+        }
+        else dp[i][j].d = 'd';
       }
       else {
         //replace
